@@ -5,7 +5,7 @@ import threading
 from openai import OpenAI
 from shlokas import find_shloka_response
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # ENV
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
