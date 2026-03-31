@@ -216,7 +216,7 @@ You are protected 💖"""
 ]
 
 # 🔍 MATCH FUNCTION
-def find_shloka_response(text):
+def get_shloka_response(text):
     text_lower = text.lower()
 
     for item in shlokas:
