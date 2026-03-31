@@ -1,249 +1,149 @@
-from flask import Flask, request
-import requests
-import os
-from stories import get_story
+import random
 
-app = Flask(__name__)
+stories = [
 
-# 🔐 ENV VARIABLES
-VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
+{
+"title": "Krishna the Butter Thief 🧈",
+"image": "https://i.imgur.com/3XK0Z6F.png",
+"audio": "",  # 👉 add narration link later
+"text": """🌸 Krishna the Butter Thief 🧈
 
-# 🧠 USER MODE MEMORY
-user_mode = {}   # { phone_number: "innerpeace" or "balgokulam" }
+In the joyful village of Gokul, the gopis made fresh butter every day and hung it high from the ceiling.
 
+But little Krishna always found a way to reach it!
 
-# =========================
-# 📩 SEND TEXT MESSAGE
-# =========================
-def send_message(to, msg):
-    url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
+With His friends, He made a human pyramid, climbed up, and broke the butter pots. Butter spilled everywhere, and Krishna happily shared it with His friends and even monkeys 🐒
 
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
+One day, Mother Yashoda caught Him. Krishna looked innocent, but His butter-covered face told the truth 😄
 
-    data = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "text",
-        "text": {"body": msg}
-    }
+Yashoda smiled and hugged Him lovingly.
 
-    try:
-        requests.post(url, headers=headers, json=data, timeout=5)
-    except Exception as e:
-        print("Text send error:", e)
+💡 Learning: Krishna doesn’t steal butter — He steals hearts.
 
+🎯 Activity: Draw Krishna stealing butter."""
+,
+"quiz": """🧠 Quiz Time!
 
-# =========================
-# 🖼️ SEND IMAGE
-# =========================
-def send_image(to, image_url, caption=""):
-    url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
+Why did Krishna steal butter?
 
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
+A. He was hungry  
+B. He loved butter and sharing  
+C. He wanted to hide it  
 
-    data = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "image",
-        "image": {
-            "link": image_url,
-            "caption": caption
-        }
-    }
+👉 Reply A, B, or C"""
+},
 
-    try:
-        requests.post(url, headers=headers, json=data, timeout=5)
-    except Exception as e:
-        print("Image send error:", e)
+{
+"title": "Krishna and Kaliya 🐍",
+"image": "https://i.imgur.com/8Km9tLL.png",
+"audio": "",
+"text": """🌸 Krishna and Kaliya 🐍
 
+The Yamuna river became poisonous because of a serpent named Kaliya.
 
-# =========================
-# 🎧 SEND AUDIO
-# =========================
-def send_audio(to, audio_url):
-    url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
+Everyone was scared.
 
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
+Krishna jumped into the river and faced the serpent bravely. Kaliya attacked, but Krishna danced on his heads and defeated him.
 
-    data = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "audio",
-        "audio": {
-            "link": audio_url
-        }
-    }
+Finally, Kaliya surrendered, and Krishna forgave him.
 
-    try:
-        requests.post(url, headers=headers, json=data, timeout=5)
-    except Exception as e:
-        print("Audio send error:", e)
+The river became pure again 🌊✨
 
+💡 Learning: Krishna removes negativity.
 
-# =========================
-# 🧘 INNER PEACE RESPONSE
-# =========================
-def get_krishna_response(text, sender):
-    return f"Hare Krishna 🙏 Reflecting on: {text}"
+🎯 Activity: Draw Krishna dancing on Kaliya."""
+,
+"quiz": """🧠 Quiz Time!
 
+What did Krishna do to Kaliya?
 
-# =========================
-# 🌐 WEBHOOK
-# =========================
-@app.route("/webhook", methods=["GET", "POST"])
-def webhook():
+A. Ran away  
+B. Became friends  
+C. Danced on his heads  
 
-    # 🔐 VERIFY TOKEN
-    if request.method == "GET":
-        if request.args.get("hub.verify_token") == VERIFY_TOKEN:
-            return request.args.get("hub.challenge"), 200
-        return "error", 403
+👉 Reply A, B, or C"""
+},
 
-    data = request.json
+{
+"title": "Govardhan Lila 🌧️",
+"image": "https://i.imgur.com/F7z8p9O.png",
+"audio": "",
+"text": """🌸 Krishna Lifts Govardhan Hill 🌧️
 
-    try:
-        entry = data["entry"][0]["changes"][0]["value"]
+Indra sent heavy rain to punish the villagers.
 
-        if "messages" not in entry:
-            return "ok", 200
+Krishna lifted Govardhan Hill with His little finger and protected everyone for 7 days.
 
-        msg = entry["messages"][0]
+Everyone stayed safe under the hill.
 
-        if "text" not in msg:
-            return "ok", 200
+💡 Learning: Krishna protects His devotees.
 
-        sender = msg["from"]
-        text = msg["text"]["body"].strip().lower()
+🎯 Activity: Make a small hill using clay."""
+,
+"quiz": """🧠 Quiz Time!
 
-        print("User:", sender, text)
+How did Krishna protect villagers?
 
-        # =========================
-        # 🌟 MAIN MENU
-        # =========================
-        if text in ["hi", "hello", "start", "menu"]:
-            user_mode[sender] = None
+A. Built houses  
+B. Lifted mountain  
+C. Stopped rain  
 
-            send_message(sender,
-"""Hare Krishna 🙏
+👉 Reply A, B, or C"""
+},
 
-Welcome 🌸
+{
+"title": "Sudama and Krishna 🍚",
+"image": "https://i.imgur.com/B9xkY2T.png",
+"audio": "",
+"text": """🌸 Krishna and Sudama 🍚
 
-Please choose:
+Sudama was poor but loved Krishna deeply.
 
-1️⃣ Inner Peace (Guidance)
-2️⃣ BalGokulam (Kids Stories)""")
+Krishna welcomed him with love and honored him.
 
-            return "ok", 200
+Sudama returned home to find everything changed.
 
-        # =========================
-        # 🧘 SELECT INNER PEACE
-        # =========================
-        if text == "1" and user_mode.get(sender) is None:
-            user_mode[sender] = "innerpeace"
+💡 Learning: True friendship is beyond wealth.
 
-            send_message(sender,
-"""🧘 Inner Peace 🌸
+🎯 Activity: Say thank you to your friend."""
+,
+"quiz": """🧠 Quiz Time!
 
-Ask me anything troubling your mind 💭
-Krishna will guide you 🙏""")
+What did Sudama bring?
 
-            return "ok", 200
+A. Gold  
+B. Fruits  
+C. Flattened rice  
 
-        # =========================
-        # 👶 SELECT BALGOKULAM
-        # =========================
-        if text == "2" and user_mode.get(sender) is None:
-            user_mode[sender] = "balgokulam"
+👉 Reply A, B, or C"""
+},
 
-            send_message(sender,
-"""👶 BalGokulam 🌸
+{
+"title": "Putana Story 👶",
+"image": "https://i.imgur.com/6XgJ7Yk.png",
+"audio": "",
+"text": """🌸 Krishna and Putana 👶
 
-Reply:
-1️⃣ Story of the Day
-2️⃣ Fun Activity
+Putana came to harm Krishna.
 
-Type 'menu' anytime to go back""")
+But Krishna gave her liberation.
 
-            return "ok", 200
+💡 Learning: Krishna is merciful.
 
-        # =========================
-        # 👶 BALGOKULAM FLOW
-        # =========================
-        if user_mode.get(sender) == "balgokulam":
+🎯 Activity: Color baby Krishna."""
+,
+"quiz": """🧠 Quiz Time!
 
-            if text in ["1", "story", "1️⃣"]:
-                story = get_story()
+Who was Putana?
 
-                # 🖼️ IMAGE
-                if isinstance(story, dict) and story.get("image"):
-                    send_image(sender, story["image"], story.get("title", ""))
+A. Friend  
+B. Demon  
+C. Cow  
 
-                # 📖 TEXT
-                if isinstance(story, dict):
-                    send_message(sender, story.get("text", ""))
-                else:
-                    send_message(sender, story)
+👉 Reply A, B, or C"""
+}
 
-                # 🎧 AUDIO
-                if isinstance(story, dict) and story.get("audio"):
-                    send_audio(sender, story["audio"])
+]
 
-            elif text in ["2", "activity", "2️⃣"]:
-                send_message(sender,
-"""🎯 Activity Time!
-
-Draw Krishna with cows 🐄
-OR
-Chant Hare Krishna 5 times 🎶""")
-
-            else:
-                send_message(sender,
-"""👶 BalGokulam 🌸
-
-Reply:
-1️⃣ Story
-2️⃣ Activity
-
-Type 'menu' to switch mode""")
-
-            return "ok", 200
-
-        # =========================
-        # 🧘 INNER PEACE FLOW
-        # =========================
-        if user_mode.get(sender) == "innerpeace":
-            reply = get_krishna_response(text, sender)
-            send_message(sender, reply)
-            return "ok", 200
-
-        # =========================
-        # 🔄 FALLBACK
-        # =========================
-        send_message(sender,
-"""Hare Krishna 🙏
-
-Type 'hi' to begin 🌸""")
-
-    except Exception as e:
-        print("Webhook Error:", e)
-
-    return "ok", 200
-
-
-# =========================
-# 🚀 RUN APP
-# =========================
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+def get_story():
+    return random.choice(stories)
