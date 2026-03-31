@@ -215,3 +215,18 @@ You are protected 💖"""
 
 ]
 
+# 🔍 MATCH FUNCTION
+def find_shloka_response(text):
+    text_lower = text.lower()
+
+    for item in shlokas:
+        for keyword in item["keywords"]:
+            if keyword in text_lower:
+                return f"""Hare Krishna 🙏
+
+Krishna says in {item['verse']}:
+
+{item['message']}"""
+
+    return None
+
