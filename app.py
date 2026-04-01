@@ -2,11 +2,13 @@ from flask import Flask, request
 import requests
 import os
 import json
+import threading
+import time
+from datetime import datetime
 
 from shlokas import get_shloka_response
 from stories import get_story
 
-# 🧠 AI
 from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -17,120 +19,99 @@ ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
 
 # =========================
-# 💾 PERSISTENT MEMORY
+# MEMORY FILES
 # =========================
 MEMORY_FILE = "user_memory.json"
+USERS_FILE = "users.json"
 
-def load_memory():
+def load_json(file):
     try:
-        with open(MEMORY_FILE, "r") as f:
+        with open(file, "r") as f:
             return json.load(f)
     except:
         return {}
 
-def save_memory(data):
-    with open(MEMORY_FILE, "w") as f:
+def save_json(file, data):
+    with open(file, "w") as f:
         json.dump(data, f)
 
-user_mode = load_memory()
+user_mode = load_json(MEMORY_FILE)
+user_quiz = {}
+user_streak = {}
 processed_messages = set()
 
+def save_user(num):
+    users = load_json(USERS_FILE)
+    if num not in users:
+        users.append(num)
+        save_json(USERS_FILE, users)
 
 # =========================
-# 📩 SEND TEXT
+# SEND FUNCTIONS
 # =========================
 def send_message(to, msg):
     url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json"}
+    data = {"messaging_product": "whatsapp","to": to,"type": "text","text": {"body": msg}}
+    requests.post(url, headers=headers, json=data)
+
+def send_buttons(to, body, buttons):
+    url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
+    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json"}
     data = {
         "messaging_product": "whatsapp",
         "to": to,
-        "type": "text",
-        "text": {"body": msg}
+        "type": "interactive",
+        "interactive": {"type": "button","body": {"text": body},"action": {"buttons": buttons}}
     }
-    try:
-        requests.post(url, headers=headers, json=data, timeout=5)
-    except Exception as e:
-        print("Text error:", e)
+    requests.post(url, headers=headers, json=data)
 
-
-# =========================
-# 🖼️ IMAGE
-# =========================
 def send_image(to, img, caption=""):
     url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "image",
-        "image": {"link": img, "caption": caption}
-    }
-    try:
-        requests.post(url, headers=headers, json=data, timeout=5)
-    except Exception as e:
-        print("Image error:", e)
+    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json"}
+    data = {"messaging_product": "whatsapp","to": to,"type": "image","image": {"link": img,"caption": caption}}
+    requests.post(url, headers=headers, json=data)
 
-
-# =========================
-# 🎧 AUDIO
-# =========================
 def send_audio(to, audio):
     url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
-    headers = {
-        "Authorization": f"Bearer {ACCESS_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "audio",
-        "audio": {"link": audio}
-    }
-    try:
-        requests.post(url, headers=headers, json=data, timeout=5)
-    except Exception as e:
-        print("Audio error:", e)
-
+    headers = {"Authorization": f"Bearer {ACCESS_TOKEN}", "Content-Type": "application/json"}
+    data = {"messaging_product": "whatsapp","to": to,"type": "audio","audio": {"link": audio}}
+    requests.post(url, headers=headers, json=data)
 
 # =========================
-# 🧘 AI KRISHNA RESPONSE
+# AI RESPONSE
 # =========================
-def get_ai_response(user_text):
-
+def get_ai_response(text):
     try:
-        response = client.chat.completions.create(
+        res = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {
-                    "role": "system",
-                    "content": "You are Lord Krishna giving calm, spiritual, Bhagavad Gita based guidance in simple words."
-                },
-                {
-                    "role": "user",
-                    "content": user_text
-                }
-            ],
-            max_tokens=200
+                {"role": "system", "content": "You are Krishna giving calm Bhagavad Gita based guidance."},
+                {"role": "user", "content": text}
+            ]
         )
-
-        return "Hare Krishna 🙏\n\n" + response.choices[0].message.content
-
-    except Exception as e:
-        print("AI error:", e)
-
-        # fallback
-        return get_shloka_response(user_text)
-
+        return "🌸 Hare Krishna 🙏\n\n" + res.choices[0].message.content
+    except:
+        return get_shloka_response(text)
 
 # =========================
-# 🌐 WEBHOOK
+# DAILY BROADCAST
+# =========================
+def daily_broadcast():
+    while True:
+        now = datetime.now()
+        if now.hour == 7 and now.minute == 0:
+            users = load_json(USERS_FILE)
+            story = get_story()
+            for u in users:
+                send_message(u, f"🌅 Good Morning 🌸\n\n{story['text'][:300]}")
+            time.sleep(60)
+        time.sleep(20)
+
+threading.Thread(target=daily_broadcast, daemon=True).start()
+
+# =========================
+# WEBHOOK
 # =========================
 @app.route("/webhook", methods=["GET", "POST"])
 def webhook():
@@ -144,105 +125,103 @@ def webhook():
 
     try:
         entry = data["entry"][0]["changes"][0]["value"]
-
         if "messages" not in entry:
             return "ok", 200
 
         msg = entry["messages"][0]
 
-        # 🚫 DUPLICATE FIX
         msg_id = msg.get("id")
         if msg_id in processed_messages:
             return "ok", 200
         processed_messages.add(msg_id)
 
-        if "text" not in msg:
-            return "ok", 200
-
         sender = msg["from"]
-        text = msg["text"]["body"].strip().lower()
+        save_user(sender)
 
-        print(sender, text)
+        if "interactive" in msg:
+            text = msg["interactive"]["button_reply"]["id"]
+        else:
+            text = msg["text"]["body"].lower().strip()
 
-        # =========================
-        # MENU
-        # =========================
-        if text in ["hi", "hello", "start", "menu"]:
+        # ================= MENU =================
+        if text in ["hi", "menu", "start"]:
             user_mode[sender] = None
-            save_memory(user_mode)
+            save_json(MEMORY_FILE, user_mode)
 
-            send_message(sender,
-"""Hare Krishna 🙏
-
-Please choose:
-
-1️⃣ Inner Peace (Guidance)
-2️⃣ BalGokulam (Kids Stories)""")
-
+            send_buttons(sender,
+                "🌸 Hare Krishna 🙏\n\nWelcome ✨\n\nWhat would you like?",
+                [
+                    {"type": "reply","reply": {"id": "inner","title": "🧘 Inner Peace"}},
+                    {"type": "reply","reply": {"id": "bal","title": "👶 Balgokulam"}}
+                ])
             return "ok", 200
 
-        # =========================
-        # SELECT MODES
-        # =========================
-        if text == "1" and user_mode.get(sender) is None:
+        # ================= SELECT =================
+        if text in ["inner","1"] and user_mode.get(sender) is None:
             user_mode[sender] = "innerpeace"
-            save_memory(user_mode)
-
-            send_message(sender,
-"""🧘 Inner Peace 🌸
-
-Share what is troubling your mind 💭""")
-
+            save_json(MEMORY_FILE, user_mode)
+            send_message(sender, "🧘 Share your thoughts 💭")
             return "ok", 200
 
-        if text == "2" and user_mode.get(sender) is None:
+        if text in ["bal","2"] and user_mode.get(sender) is None:
             user_mode[sender] = "balgokulam"
-            save_memory(user_mode)
+            save_json(MEMORY_FILE, user_mode)
 
-            send_message(sender,
-"""👶 BalGokulam 🌸
-
-Reply:
-1️⃣ Story
-2️⃣ Activity""")
-
+            send_buttons(sender,
+                "👶 BalGokulam 🌸",
+                [
+                    {"type": "reply","reply": {"id": "story","title": "📖 Story"}},
+                    {"type": "reply","reply": {"id": "activity","title": "🎯 Activity"}}
+                ])
             return "ok", 200
 
-        # =========================
-        # BALGOKULAM
-        # =========================
+        # ================= QUIZ =================
+        if sender in user_quiz and text.startswith("opt_"):
+
+            correct = user_quiz[sender]["answer"]
+
+            if text == correct:
+                send_buttons(sender,
+                    "🌸 Correct! Krishna is happy 💛",
+                    [
+                        {"type": "reply","reply": {"id": "next","title": "➡️ Next Story"}},
+                        {"type": "reply","reply": {"id": "menu","title": "🏠 Menu"}}
+                    ])
+            else:
+                send_buttons(sender,
+                    f"💛 Correct answer: {correct}",
+                    [
+                        {"type": "reply","reply": {"id": "next","title": "➡️ Try Another"}},
+                        {"type": "reply","reply": {"id": "menu","title": "🏠 Menu"}}
+                    ])
+
+            del user_quiz[sender]
+            return "ok", 200
+
+        # ================= BALGOKULAM =================
         if user_mode.get(sender) == "balgokulam":
 
-            if text in ["1", "story"]:
+            if text in ["story","next"]:
                 story = get_story()
 
-                if story.get("image"):
-                    send_image(sender, story["image"], story["title"])
-
+                send_image(sender, story["image"], story["title"])
                 send_message(sender, story["text"])
 
-                if story.get("audio"):
-                    send_audio(sender, story["audio"])
+                send_buttons(sender,
+                    story["quiz_question"],
+                    [{"type":"reply","reply": opt} for opt in story["quiz_options"]]
+                )
 
-                if story.get("quiz"):
-                    send_message(sender, story["quiz"])
+                user_quiz[sender] = {"answer": story["answer"]}
 
-            elif text in ["2", "activity"]:
-                send_message(sender,
-"""🎯 Activity Time!
-
-Draw Krishna OR chant 5 times 🙏""")
+            elif text == "activity":
+                send_message(sender, "🎯 Draw Krishna or chant 5 times 🙏")
 
             return "ok", 200
 
-        # =========================
-        # INNER PEACE (AI + SHLOKA)
-        # =========================
+        # ================= INNER PEACE =================
         if user_mode.get(sender) == "innerpeace":
-
-            reply = get_ai_response(text)
-            send_message(sender, reply)
-
+            send_message(sender, get_ai_response(text))
             return "ok", 200
 
     except Exception as e:
@@ -251,9 +230,5 @@ Draw Krishna OR chant 5 times 🙏""")
     return "ok", 200
 
 
-# =========================
-# RUN
-# =========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000)
