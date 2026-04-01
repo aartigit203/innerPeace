@@ -272,7 +272,7 @@ def webhook():
         # INNER PEACE
         if user_mode.get(sender)=="inner":
             print("User asked:", text)
-                context = get_conversation(sender) + " " + text
+                context = get_conversation(sender) + "" + text
                 base_response = get_shloka_response(context)
 
                 name, topic = get_profile_context(sender)
@@ -290,11 +290,6 @@ def webhook():
                     insight = ""
 
                 final_response = greeting + insight + base_response.replace("🌸 Hare Krishna 🙏\n\n", "")
-
-            context = get_conversation(sender)+" " + text
-            base_response = get_shloka_response(context)
-            names, topic = get_profile_context(sender)
-
         
             if "Krishna is with you" not in final_response:
                 send_message(sender,final_response)
