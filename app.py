@@ -36,6 +36,8 @@ processed = set()
 # ================= SAVE USER =================
 def save_user(num):
     users = load_json("users.json")
+    if not isinstance(users, list):
+        users=[]
     if num not in users:
         users.append(num)
         save_json("users.json", users)
