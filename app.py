@@ -215,7 +215,13 @@ def webhook():
 
         # INNER PEACE
         if user_mode.get(sender)=="inner":
-            send_message(sender,ai_reply(text))
+            print("User asked:", text)
+            # Try Shloka first
+            shloka = get_shloka_response(text)
+            if "Krishna is with you" not in shloka:
+                send_message(sender,shloka)
+            else:
+                send_message(sender,ai_reply(text))
             return "ok",200
 
     except Exception as e:
