@@ -26,6 +26,44 @@ def save_json(file, data):
     with open(file, "w") as f:
         json.dump(data, f)
 
+
+def update_conversation(user, message):
+    conv = load_json("conversation.json")
+    if user not in conv:
+        conv[user] = []
+    conv[user].append(message)
+
+    # keep only last 5 messages
+    conv[user] = conv[user][-5:]
+    save_json("conversation.json", conv)
+
+def update_profile(user, text):
+    profiles = load_json("profiles.json")
+
+    if user not in profiles:
+        profiles[user] = {
+            "name": "",
+            "topics": {}
+        }
+
+    # Detect name (simple pattern)
+    if "my name is" in text:
+        name = text.split("my name is")[-1].strip().title()
+        profiles[user]["name"] = name
+
+    # Track topics
+    keywords = ["stress", "career", "anxiety", "sad", "fear"]
+
+    for k in keywords:
+        if k in text:
+            profiles[user]["topics"][k] = profiles[user]["topics"].get(k, 0) + 1
+
+    save_json("profiles.json", profiles)
+
+
+def get_conversation(user):
+    conv = load_json("conversation.json")
+    return " ".join(conv.get(user, []))
 # ================= LOAD STATE =================
 user_mode = load_json("user_memory.json")
 user_quiz = load_json("quiz.json")
@@ -98,6 +136,21 @@ def broadcast():
 
 threading.Thread(target=broadcast, daemon=True).start()
 
+# ================= PROFILE =================
+def get_profile_context(user):
+    profiles = load_json("profiles.json")
+
+    profile = profiles.get(user, {})
+    name = profile.get("name", "")
+    topics = profile.get("topics", {})
+
+    top_topic = ""
+
+    if topics:
+        top_topic = max(topics, key=topics.get)
+
+    return name, top_topic
+
 # ================= WEBHOOK =================
 @app.route("/webhook", methods=["GET","POST"])
 def webhook():
@@ -120,6 +173,9 @@ def webhook():
         save_user(sender)
 
         text = msg["interactive"]["button_reply"]["id"] if "interactive" in msg else msg["text"]["body"].lower()
+        update_profile(sender,text)
+        update_conversation(sender, text)
+        
 
         # 🌸 MENU
         if text in ["hi","menu"]:
@@ -216,10 +272,32 @@ def webhook():
         # INNER PEACE
         if user_mode.get(sender)=="inner":
             print("User asked:", text)
-            # Try Shloka first
-            shloka = get_shloka_response(text)
-            if "Krishna is with you" not in shloka:
-                send_message(sender,shloka)
+                context = get_conversation(sender) + " " + text
+                base_response = get_shloka_response(context)
+
+                name, topic = get_profile_context(sender)
+
+                # Personalize greeting
+                if name:
+                    greeting = f"🌸 Hare Krishna {name} 🙏\n\n"
+                else:
+                    greeting = "🌸 Hare Krishna 🙏\n\n"
+
+                # Add pattern awareness
+                if topic:
+                    insight = f"I notice you’ve been thinking about {topic} lately 🌿\n\n"
+                else:
+                    insight = ""
+
+                final_response = greeting + insight + base_response.replace("🌸 Hare Krishna 🙏\n\n", "")
+
+            context = get_conversation(sender)+" " + text
+            base_response = get_shloka_response(context)
+            names, topic = get_profile_context(sender)
+
+        
+            if "Krishna is with you" not in final_response:
+                send_message(sender,final_response)
             else:
                 send_message(sender,ai_reply(text))
             return "ok",200
