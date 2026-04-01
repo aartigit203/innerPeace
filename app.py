@@ -75,10 +75,13 @@ def ai_reply(text):
         r = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role":"system","content":"Krishna guiding peacefully"},
-                      {"role":"user","content":text}]
+                      {"role":"user","content":text}],
+            timeout =5 #prevents hanging 
         )
         return "🌸 Hare Krishna 🙏\n\n" + r.choices[0].message.content
-    except:
+    except EXCEPTION as e:
+        print("AI failed:", e)
+        # fallback ALWAYS works
         return get_shloka_response(text)
 
 # ================= DAILY =================
