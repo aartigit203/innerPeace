@@ -8,7 +8,7 @@ shlokas = [
     ],
     "verse": "Bhagavad-gita 2.14",
     "link": "https://vedabase.io/en/library/bg/2/14/",
-    "message": """🌸 Krishna explains that happiness and distress are temporary—like changing seasons.
+    "message": """🌸Hare Krishna 🙏\n\nYou seem under stress 🌿\n\n Krishna explains that happiness and distress are temporary—like changing seasons.
 
 Right now, your mind may feel heavy, but this moment will pass.
 
@@ -36,7 +36,7 @@ Krishna is always with you 💖"""
     ],
     "verse": "Bhagavad-gita 2.20",
     "link": "https://vedabase.io/en/library/bg/2/20/",
-    "message": """🌸 Krishna reminds us that the soul is eternal—it never dies, never breaks.
+    "message": """🌸 Hare Krishna 🙏\n\nYou seem sad 🌿\n\n🕉️ BG 2.20 — This phase will pass.\n\nYou are stronger than this 💛Krishna reminds us that the soul is eternal—it never dies, never breaks.
 
 What you are feeling now is real… but it is not your true identity.
 
@@ -61,7 +61,7 @@ Stay close to Him 💖"""
     ],
     "verse": "Bhagavad-gita 18.66",
     "link": "https://vedabase.io/en/library/bg/18/66/",
-    "message": """🌸 When everything feels confusing, Krishna gives the simplest guidance:
+    "message": """🌸 🌸 Hare Krishna 🙏\n\nFeeling confused is natural 🌿\n\nLike Arjuna, seek guidance.\nKrishna will guide you 💛 \n\n When everything feels confusing, Krishna gives the simplest guidance:
 
 ✨ Surrender to Him.
 
@@ -85,7 +85,7 @@ Trust Him 💖"""
     ],
     "verse": "Bhagavad-gita 2.63",
     "link": "https://vedabase.io/en/library/bg/2/63/",
-    "message": """🌸 Krishna explains that anger clouds judgment and leads to confusion.
+    "message": """🌸 Hare Krishna 🙏\n\nAnger disturbs the mind 🌿\n\nPause… breathe… chant 💛\n\n Krishna explains that anger clouds judgment and leads to confusion.
 
 Right now, pause… breathe… step back.
 
@@ -107,7 +107,7 @@ Let Krishna guide your mind 💖"""
     ],
     "verse": "Bhagavad-gita 2.47",
     "link": "https://vedabase.io/en/library/bg/2/47/",
-    "message": """🌸 Krishna teaches that your duty is to act—not to control results.
+    "message": """🌸 Hare Krishna 🙏\n\nFailure is not the end 🌿\n\nKrishna is redirecting you 💛 \n\n Krishna teaches that your duty is to act—not to control results.
 
 Failure does not define you.
 
@@ -131,7 +131,7 @@ You are stronger than you think 💪💖"""
     ],
     "verse": "Bhagavad-gita 9.22",
     "link": "https://vedabase.io/en/library/bg/9/22/",
-    "message": """🌸 Krishna personally cares for those who turn to Him.
+    "message": """🌸 Hare Krishna 🙏\n\nYou are not alone 🌿\n\n🕉️ Krishna is in your heart.\n\nSit quietly and chant 💛 \n\n Krishna personally cares for those who turn to Him.
 
 Even if people don’t understand you, Krishna understands your heart completely.
 
@@ -154,7 +154,7 @@ You are never truly alone 💖"""
     ],
     "verse": "Bhagavad-gita 18.66",
     "link": "https://vedabase.io/en/library/bg/18/66/",
-    "message": """🌸 The true purpose of life is to reconnect with Krishna.
+    "message": """🌸 Hare Krishna 🙏\n\nYou are not alone 🌿\n\n🕉️The true purpose of life is to reconnect with Krishna.
 
 We are not this body—we are eternal souls meant for loving relationship with Him.
 
@@ -177,7 +177,7 @@ This is your real journey 💖"""
     ],
     "verse": "Bhagavad-gita 6.26",
     "link": "https://vedabase.io/en/library/bg/6/26/",
-    "message": """🌸 The mind naturally wanders—but Krishna teaches how to guide it.
+    "message": """🌸 Hare Krishna 🙏\n\nYou are not alone 🌿\n\n🕉️ The mind naturally wanders—but Krishna teaches how to guide it.
 
 ✨ Gently bring your mind back again and again.
 
@@ -199,7 +199,7 @@ Stay steady 💖"""
     ],
     "verse": "Bhagavad-gita 4.7",
     "link": "https://vedabase.io/en/library/bg/4/7/",
-    "message": """🌸 Krishna appears whenever there is imbalance—to protect and guide.
+    "message": """🌸 Hare Krishna 🙏\n\nYour mind is anxious and fearful  🌿\n\n🕉️ Krishna appears whenever there is imbalance—to protect and guide.
 
 You don’t need to fear the future.
 
