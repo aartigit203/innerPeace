@@ -250,7 +250,7 @@ def webhook():
             if text in ["story","next"]:
                 s=get_story()
 
-                send_image(sender,s["image"],s["title"])
+                #send_image(sender,s["image"],s["title"])
                 send_message(sender,s["text"])
 
                 send_buttons(sender,s["quiz_question"],
