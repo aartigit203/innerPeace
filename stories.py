@@ -22,15 +22,17 @@ Yashoda smiled and hugged Him lovingly.
 
 🎯 Activity: Draw Krishna stealing butter."""
 ,
-"quiz": """🧠 Quiz Time!
 
-Why did Krishna steal butter?
+    "quiz": {
+    "question": "Why did Krishna steal butter?",
+    "options": {
+        "a": "He was hungry ",
+        "b": "He loved butter and sharing",
+        "c": "He wanted to hide it "
+    },
+    "answer": "b"
+    }
 
-A. He was hungry  
-B. He loved butter and sharing  
-C. He wanted to hide it  
-
-👉 Reply A, B, or C"""
 },
 
 {
@@ -53,15 +55,15 @@ The river became pure again 🌊✨
 
 🎯 Activity: Draw Krishna dancing on Kaliya."""
 ,
-"quiz": """🧠 Quiz Time!
-
-What did Krishna do to Kaliya?
-
-A. Ran away  
-B. Became friends  
-C. Danced on his heads  
-
-👉 Reply A, B, or C"""
+    "quiz": {
+    "question": "What did Krishna do to Kaliya?",
+    "options": {
+        "a": "Ran away ",
+        "b": "Became friends ",
+        "c": "Danced on his heads"
+    },
+    "answer": "c"
+    }
 },
 
 {
@@ -80,15 +82,16 @@ Everyone stayed safe under the hill.
 
 🎯 Activity: Make a small hill using clay."""
 ,
-"quiz": """🧠 Quiz Time!
+    "quiz": {
+    "question": "How did Krishna protect villagers?",
+    "options": {
+        "a": "Built houses ",
+        "b": "Lifted mountain",
+        "c": "Stopped rain "
+    },
+    "answer": "b"
+}
 
-How did Krishna protect villagers?
-
-A. Built houses  
-B. Lifted mountain  
-C. Stopped rain  
-
-👉 Reply A, B, or C"""
 },
 
 {
@@ -107,15 +110,16 @@ Sudama returned home to find everything changed.
 
 🎯 Activity: Say thank you to your friend."""
 ,
-"quiz": """🧠 Quiz Time!
+    "quiz": {
+    "question": "What did Sudama bring?",
+    "options": {
+        "a": "Gold",
+        "b": "Fruits",
+        "c": "Flattenned Rice"
+    },
+    "answer": "c"
+}
 
-What did Sudama bring?
-
-A. Gold  
-B. Fruits  
-C. Flattened rice  
-
-👉 Reply A, B, or C"""
 },
 
 {
@@ -132,15 +136,16 @@ But Krishna gave her liberation.
 
 🎯 Activity: Color baby Krishna."""
 ,
-"quiz": """🧠 Quiz Time!
+    "quiz": {
+    "question": "Who was Putana?",
+    "options": {
+        "a": "Friend",
+        "b": "Daemon",
+        "c": "Cow"
+    },
+    "answer": "b"
+}
 
-Who was Putana?
-
-A. Friend  
-B. Demon  
-C. Cow  
-
-👉 Reply A, B, or C"""
 }
 
 ]
