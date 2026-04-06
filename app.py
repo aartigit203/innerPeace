@@ -253,8 +253,16 @@ def webhook():
                 #send_image(sender,s["image"],s["title"])
                 send_message(sender,s["text"])
 
-                send_buttons(sender,s["quiz_question"],
-                    [{"type":"reply","reply":opt} for opt in s["quiz_options"]])
+                quiz =s["quiz"]
+
+                send_buttons(sender,quiz["question"],
+                [
+                    {"type": "reply", "reply": {"id": "a", "title": quiz["options"]["a"]}},
+                    {"type": "reply", "reply": {"id": "b", "title": quiz["options"]["b"]}},
+                    {"type": "reply", "reply": {"id": "c", "title": quiz["options"]["c"]}}
+                ]
+                )
+
 
                 user_quiz[sender]={"answer":s["answer"]}
                 save_json("quiz.json",user_quiz)
