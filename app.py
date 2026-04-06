@@ -253,7 +253,13 @@ def webhook():
                 #send_image(sender,s["image"],s["title"])
                 send_message(sender,s["text"])
 
-                quiz =s["quiz"]
+                
+                quiz = s.get("quiz")
+
+                if not isinstance(quiz, dict):
+                    print("❌ Quiz format invalid:", quiz)
+                    send_message(sender, "🌸 Krishna will ask you a question next time 😊")
+                    return "ok", 200
 
                 send_buttons(sender,quiz["question"],
                 [
@@ -264,7 +270,7 @@ def webhook():
                 )
 
 
-                user_quiz[sender]={"answer":s["answer"]}
+                user_quiz[sender]={"answer":quiz["answer"]}
                 save_json("quiz.json",user_quiz)
 
             elif text=="leader":
