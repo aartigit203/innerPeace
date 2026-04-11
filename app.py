@@ -66,15 +66,6 @@ def webhook():
 
     return "ok",200
 
-        set_quiz(sender,s["quiz"]["answer"])
-
-        send_buttons(sender,s["quiz"]["question"],[
-            {"type":"reply","reply":{"id":"a","title":s["quiz"]["options"]["a"]}},
-            {"type":"reply","reply":{"id":"b","title":s["quiz"]["options"]["b"]}},
-            {"type":"reply","reply":{"id":"c","title":s["quiz"]["options"]["c"]}}
-        ])
-
-    return "ok",200
 
     # ANSWER
     if text in ["a","b","c"]:
