@@ -210,8 +210,10 @@ def webhook():
 
         # QUIZ ANSWER
         if sender in user_quiz and text.startswith("opt_"):
+            user_quiz[sender] = {"answer":quiz["answer"]}
+            save_json("quiz.json", user_quiz)
 
-            correct=user_quiz[sender]["answer"]
+           
 
             # STREAK
             today=str(datetime.now().date())
@@ -227,11 +229,21 @@ def webhook():
             # LEADERBOARD
             leaderboard[sender]=prev["count"]
             save_json("leaderboard.json",leaderboard)
-
+    
+            if text in ["a", "b", "c"]:
+                 correct= get_quiz(sender)
+                print{"User:", sender}
+                print{"User Answer:", text}
+                print{"Correct Answer:", correct}
             if text==correct:
-                msg="✨ Correct! Krishna is happy 💛"
+                #msg="✨ Correct! Krishna is happy 💛"
+                update_score(sender)
+                send_message(sender,"Correct! Krishna is very Happy")
             else:
-                msg=f"💛 Correct answer: {correct}"
+                #msg=f"💛 Correct answer: {correct}"
+                send_message(sender,"Nice Try \n Correct answer was: {correct.upper()}"} 
+            
+            return "OK",200
 
             send_buttons(sender,
                 f"{msg}\n🔥 Streak: {prev['count']}",
@@ -239,7 +251,17 @@ def webhook():
                     {"type":"reply","reply":{"id":"next","title":"➡️ Next"}},
                     {"type":"reply","reply":{"id":"leader","title":"🏆 Leaderboard"}}
                 ])
-
+    def get_quiz(user):
+        data = load.json("quiz.json")
+        return data.get(user, {}).get("answer")
+    def update_score(user):
+        scores=load.json("leaderboard.json")
+        if user not in scores:
+            scores[user] = 0
+        scores[user] += 1
+        save_json("leaderboard.json",scores)
+        print("updated leaderboard",scores)
+        
             del user_quiz[sender]
             save_json("quiz.json",user_quiz)
             return "ok",200
@@ -274,12 +296,19 @@ def webhook():
                 save_json("quiz.json",user_quiz)
 
             elif text=="leader":
-                top=sorted(leaderboard.items(),key=lambda x:x[1],reverse=True)[:5]
-                msg="🏆 Top Learners\n\n"
-                for i,(u,c) in enumerate(top,1):
-                    msg+=f"{i}. {u[-4:]} → {c}🔥\n"
+                scores=load_json(leaderboard.json")
+                if not scores:
+                    send_message(sender, "🌸 No scores yet. Be first! 💛")
+                    return "ok", 200
 
-                send_message(sender,msg)
+                msg = "🏆 Top Learners\n\n"
+
+                sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+                for i, (u, s) in enumerate(sorted_scores[:5], 1):
+                    msg += f"{i}. {u[-4:]} → {s} 🔥\n"
+
+                send_message(sender, msg)
 
             return "ok",200
 
