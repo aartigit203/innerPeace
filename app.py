@@ -71,8 +71,8 @@ def webhook():
 
 
     # ANSWER
-    if text in ["a","b","c"]:
-        correct = get_quiz(sender)
+        if text in ["a","b","c"]:
+            correct = get_quiz(sender)
 
         if not correct:
             send_message(sender,"⚠️ Try story again")
