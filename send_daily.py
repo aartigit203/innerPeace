@@ -1,5 +1,5 @@
 import requests, os, json
-from daily_stories import get_daily_story
+from services.daily_stories import get_daily_story
 from datetime import date
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
