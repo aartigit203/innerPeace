@@ -232,9 +232,9 @@ def webhook():
     
             if text in ["a", "b", "c"]:
                  correct= get_quiz(sender)
-                print{"User:", sender}
-                print{"User Answer:", text}
-                print{"Correct Answer:", correct}
+                 print{"User:", sender}
+                 print{"User Answer:", text}
+                 print{"Correct Answer:", correct}
             if text==correct:
                 #msg="✨ Correct! Krishna is happy 💛"
                 update_score(sender)
