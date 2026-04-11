@@ -235,12 +235,12 @@ def webhook():
                  print("User:", sender)
                  print("User Answer:", text)
                  print("Correct Answer:", correct)
-                send_buttons(sender,
-                f"{msg}\n🔥 Streak: {prev['count']}",
-                [
+                 #send_buttons(sender,
+                  f"{msg}\n🔥 Streak: {prev['count']}",
+                  [
                     {"type":"reply","reply":{"id":"next","title":"➡️ Next"}},
                     {"type":"reply","reply":{"id":"leader","title":"🏆 Leaderboard"}}
-                ])
+                  ])
             if text==correct:
                 #msg="✨ Correct! Krishna is happy 💛"
                 update_score(sender)
