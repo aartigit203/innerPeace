@@ -21,14 +21,32 @@ def save_json(file, data):
     with open(file, "w") as f:
         json.dump(data, f)
 
-def send_message(to, text):
+def send_template(to, day, title, text, video, streak):
+
     url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
+
     payload = {
         "messaging_product": "whatsapp",
         "to": to,
-        "type": "text",
-        "text": {"body": text}
+        "type": "template",
+        "template": {
+            "name": "daily_krishna_story",
+            "language": {"code": "en"},
+            "components": [
+                {
+                    "type": "body",
+                    "parameters": [
+                        {"type": "text", "text": str(day)},
+                        {"type": "text", "text": title},
+                        {"type": "text", "text": text[:500]},
+                        {"type": "text", "text": video},
+                        {"type": "text", "text": str(streak)}
+                    ]
+                }
+            ]
+        }
     }
+
     requests.post(url, headers=headers, json=payload)
 
 def send_buttons(to, text):
@@ -51,6 +69,9 @@ def send_buttons(to, text):
     }
     requests.post(url, headers=headers, json=payload)
 
+
+
+
 def main():
 
     users = load_json("users.json")
@@ -58,23 +79,44 @@ def main():
     for user in users:
 
         day = users[user]
+
+        
+        missed = check_missed_users()
+        
+        for user in missed:
+        
+            msg = """🌸 Hare Krishna 🙏
+        
+        Krishna noticed you were not here yesterday 💛
+        
+        No worries… come back today 🌿  
+        Every small step towards Him matters ✨"""
+        
+            send_message(user, msg)
+    
         story = get_daily_story(day)
+        streak_data = load_json("streak.json")
+        streak = streak_data.get(user, {}).get("count", 1)
+
+        send_template(
+        user,
+        story["day"],
+        story["title"],
+        story["text"],
+        story["video"],
+        streak
+        )
 
         message = f"""🌸 Hare Krishna 🙏
 
-📖 {story['title']}
-
-{story['text']}
-
-🎥 Watch:
-{story['video']}
-
-✨ Come back tomorrow for next story 💛"""
+        ✨  Come back tomorrow for next story 💛"""
 
         send_message(user, message)
 
         # Send quiz
         send_buttons(user, "🌸 Quiz Time!\nReply A, B or C")
+
+        
 
 if __name__ == "__main__":
     main()
