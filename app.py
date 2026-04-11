@@ -48,6 +48,9 @@ def webhook():
         s = get_story()
 
         send_message(sender,s["text"])
+        
+        quiz = s.get("quiz")
+        
         if not quiz:
             send_message(sender, "🌸 No quiz today 😊")
             return "ok",200
