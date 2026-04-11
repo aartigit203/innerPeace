@@ -241,7 +241,7 @@ def webhook():
                 send_message(sender,"Correct! Krishna is very Happy")
             else:
                 #msg=f"💛 Correct answer: {correct}"
-                send_message(sender,"Nice Try \n Correct answer was: {correct.upper()}"} 
+                send_message(sender,"Nice Try \n Correct answer was: {correct.upper()}") 
             
             return "OK",200
 
