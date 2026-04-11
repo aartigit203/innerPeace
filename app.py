@@ -48,6 +48,23 @@ def webhook():
         s = get_story()
 
         send_message(sender,s["text"])
+        if not quiz:
+            send_message(sender, "🌸 No quiz today 😊")
+            return "ok",200
+
+        set_quiz(sender, quiz["answer"])
+
+        send_buttons(
+            sender,
+            quiz["question"],
+            [
+                {"type":"reply","reply":{"id":"a","title":quiz["options"]["a"]}},
+                {"type":"reply","reply":{"id":"b","title":quiz["options"]["b"]}},
+                {"type":"reply","reply":{"id":"c","title":quiz["options"]["c"]}}
+            ]
+            )
+
+    return "ok",200
 
         set_quiz(sender,s["quiz"]["answer"])
 
@@ -57,7 +74,7 @@ def webhook():
             {"type":"reply","reply":{"id":"c","title":s["quiz"]["options"]["c"]}}
         ])
 
-        return "ok",200
+    return "ok",200
 
     # ANSWER
     if text in ["a","b","c"]:
