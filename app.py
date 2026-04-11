@@ -235,6 +235,12 @@ def webhook():
                  print("User:", sender)
                  print("User Answer:", text)
                  print("Correct Answer:", correct)
+                send_buttons(sender,
+                f"{msg}\n🔥 Streak: {prev['count']}",
+                [
+                    {"type":"reply","reply":{"id":"next","title":"➡️ Next"}},
+                    {"type":"reply","reply":{"id":"leader","title":"🏆 Leaderboard"}}
+                ])
             if text==correct:
                 #msg="✨ Correct! Krishna is happy 💛"
                 update_score(sender)
@@ -245,24 +251,19 @@ def webhook():
             
             return "OK",200
 
-            send_buttons(sender,
-                f"{msg}\n🔥 Streak: {prev['count']}",
-                [
-                    {"type":"reply","reply":{"id":"next","title":"➡️ Next"}},
-                    {"type":"reply","reply":{"id":"leader","title":"🏆 Leaderboard"}}
-                ])
-    def get_quiz(user):
-        data = load.json("quiz.json")
-        return data.get(user, {}).get("answer")
-    def update_score(user):
-        scores=load.json("leaderboard.json")
-        if user not in scores:
-            scores[user] = 0
-        scores[user] += 1
-        save_json("leaderboard.json",scores)
-        print("updated leaderboard",scores)
+            
+        def get_quiz(user):
+            data = load.json("quiz.json")
+            return data.get(user, {}).get("answer")
+        def update_score(user):
+            scores=load.json("leaderboard.json")
+            if user not in scores:
+                scores[user] = 0
+            scores[user] += 1
+            save_json("leaderboard.json",scores)
+            print("updated leaderboard",scores)
         
-            del user_quiz[sender]
+        def user_quiz[sender]
             save_json("quiz.json",user_quiz)
             return "ok",200
 
