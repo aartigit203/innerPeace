@@ -296,7 +296,7 @@ def webhook():
                 save_json("quiz.json",user_quiz)
 
             elif text=="leader":
-                scores=load_json(leaderboard.json")
+                scores=load_json("leaderboard.json")
                 if not scores:
                     send_message(sender, "🌸 No scores yet. Be first! 💛")
                     return "ok", 200
