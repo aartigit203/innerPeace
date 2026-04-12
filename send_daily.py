@@ -24,6 +24,8 @@ def save_json(file, data):
 def send_template(to, day, title, text, video, streak):
 
     url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
+    print("to",to)
+    print("text"), text)
 
     payload = {
         "messaging_product": "whatsapp",
@@ -75,10 +77,12 @@ def send_buttons(to, text):
 def main():
 
     users = load_json("users.json")
+    print("users loaded":users)
 
     for user in users:
 
         day = users[user]
+        print("sendingto", user)
 
         
         missed = check_missed_users()
@@ -106,6 +110,8 @@ def main():
         story["video"],
         streak
         )
+
+        print("story",story["text"])
 
         message = f"""🌸 Hare Krishna 🙏
 
