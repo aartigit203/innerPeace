@@ -1,4 +1,4 @@
-import requests, os, json
+import requests, os, json, datetime
 from services.daily_stories import get_daily_story
 
 from datetime import date
@@ -22,6 +22,20 @@ def load_json(file):
 def save_json(file, data):
     with open(file, "w") as f:
         json.dump(data, f)
+
+# ---------- LOCK ----------
+def already_sent_today(user):
+    log = load_json("daily_log.json")
+    today = str(datetime.date.today())
+
+    if log.get(user) == today:
+        return True
+
+    log[user] = today
+    save_json("daily_log.json", log)
+    return False
+
+# ---------- SEND ----------
 
 def send_template(to, day, title, text, video, streak):
 
@@ -89,7 +103,9 @@ def main():
         print("X No Users found")
         exit()
         
-    for user in users:
+    for user, data in user.itmes():
+        if not data.get("subscribed"):
+            continue
 
         user_data = users[user]
         day=user_data.get("day",1)
@@ -123,6 +139,8 @@ def main():
         )
 
         print("story",story["text"])
+        user_data["day"] = day+1
+        save_json("data/users_daily.json", users)
 
         message = f"""🌸 Hare Krishna 🙏
 
@@ -132,8 +150,7 @@ def main():
 
         # Send quiz
         send_buttons(user, "🌸 Quiz Time!\nReply A, B or C")
-        user_data["day"] = day+1
-        save_json("data/users_daily.json", users)
+        
 
         
 
