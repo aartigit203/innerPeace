@@ -77,7 +77,7 @@ def send_buttons(to, text):
 def main():
 
     users = load_json("users.json")
-    print("users loaded":users)
+    print("users loaded:",users)
 
     for user in users:
 
