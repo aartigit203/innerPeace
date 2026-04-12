@@ -1,5 +1,6 @@
 import requests, os, json
 from services.daily_stories import get_daily_story
+from services.user_service import check_missed_users
 from datetime import date
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
