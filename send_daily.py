@@ -35,7 +35,7 @@ def send_template(to, day, title, text, video, streak):
         "type": "template",
         "template": {
             "name": "daily_krishna_story",
-            "language": {"code": "en_US"},
+            "language": {"code": "en"},
             "components": [
                 {
                     "type": "body",
