@@ -1,10 +1,16 @@
 import requests, os, json, datetime
 from services.daily_stories import get_daily_story
 from utils.json_utils import load_json, save_json
+from services.whatsapp import send_message, send_buttons
+from services.quiz_service import set_quiz, get_quiz
+from services.streak_service import update_streak
+from services.leaderboard_service import update_score, get_leaderboard
+from services.user_service import add_user
+from datetime import date
 
 FILE = "data/users_daily.json"
 
-from datetime import date
+
 
 WHATSAPP_TOKEN = os.getenv("ACCESS_TOKEN")
 PHONE_NUMBER_ID = os.getenv("DAILY_PHONE_NUMBER_ID")
@@ -62,28 +68,6 @@ def send_template(to, day, title, text, video, streak):
     print("STATUS", res.status_code)
     print("RESPONSE", res.text)
 
-def send_buttons(to, text):
-    url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": to,
-        "type": "interactive",
-        "interactive": {
-            "type": "button",
-            "body": {"text": text},
-            "action": {
-                "buttons": [
-                    {"type":"reply","reply":{"id":"a","title":"A"}},
-                    {"type":"reply","reply":{"id":"b","title":"B"}},
-                    {"type":"reply","reply":{"id":"c","title":"C"}}
-                ]
-            }
-        }
-    }
-    requests.post(url, headers=headers, json=payload)
-
-
-
 
 def main():
 
@@ -138,7 +122,7 @@ def main():
 
         ✨  Come back tomorrow for next story 💛"""
 
-        #send_message(user, message)
+        send_message(user, message)
 
         # Send quiz
         send_buttons(user, "🌸 Quiz Time!\nReply A, B or C")
