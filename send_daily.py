@@ -3,7 +3,7 @@ from services.daily_stories import get_daily_story
 from datetime import date
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
-PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
+PHONE_NUMBER_ID = os.getenv("DAILY_PHONE_NUMBER_ID")
 
 headers = {
     "Authorization": f"Bearer {WHATSAPP_TOKEN}",
@@ -33,7 +33,7 @@ def send_template(to, day, title, text, video, streak):
         "type": "template",
         "template": {
             "name": "daily_krishna_story",
-            "language": {"code": "en"},
+            "language": {"code": "en_US"},
             "components": [
                 {
                     "type": "body",
@@ -49,7 +49,10 @@ def send_template(to, day, title, text, video, streak):
         }
     }
 
-    requests.post(url, headers=headers, json=payload)
+    res = requests.post(url, headers=headers, json=payload)
+    print("Sending to", to)
+    print("STATUS", res.status_code)
+    print("RESPONSE", res.text)
 
 def send_buttons(to, text):
     url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
@@ -79,6 +82,10 @@ def main():
     users = load_json("users_daily.json")
     print("users loaded:",users)
 
+    if not users:
+        print("X No Users found")
+        exit()
+        
     for user in users:
 
         day = users[user]
