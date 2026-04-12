@@ -14,10 +14,6 @@ FILE = "data/users_daily.json"
 #WHATSAPP_TOKEN = os.getenv("ACCESS_TOKEN")
 #PHONE_NUMBER_ID = os.getenv("DAILY_PHONE_NUMBER_ID")
 
-#headers = {
-    "Authorization": "Bearer {WHATSAPP_TOKEN}",
-    "Content-Type": "application/json"
-        }        
 
 
 # ---------- LOCK ----------
