@@ -81,9 +81,8 @@ def send_buttons(to, text):
 
 def main():
 
-    users = load_json("users_daily.json")
-    users= { "919902244500": {"name": "Aarti"}
-            }
+    users = load_json("data/users_daily.json")
+    #users= { "919902244500": {"name": "Aarti"}}
     print("users loaded:",users)
 
     if not users:
@@ -92,7 +91,8 @@ def main():
         
     for user in users:
 
-        day = users[user]
+        user_data = users[user]
+        day=user_data.get("day",1)
         print("sendingto", user)
 
         
@@ -132,6 +132,8 @@ def main():
 
         # Send quiz
         send_buttons(user, "🌸 Quiz Time!\nReply A, B or C")
+        user_data["day"] = day+1
+        save_json("data/users_daily.json", users)
 
         
 
