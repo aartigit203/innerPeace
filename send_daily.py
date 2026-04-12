@@ -1,5 +1,8 @@
 import requests, os, json, datetime
 from services.daily_stories import get_daily_story
+from utils.json_utils import load_json, save_json
+
+FILE = "data/users_daily.json"
 
 from datetime import date
 
@@ -11,17 +14,6 @@ headers = {
     "Content-Type": "application/json"
 }
 
-def load_json(file):
-    try:
-        with open(file) as f:
-            print("JSON Loaded",json.dump(f))
-            return json.load(f)
-    except:
-        return {}
-
-def save_json(file, data):
-    with open(file, "w") as f:
-        json.dump(data, f)
 
 # ---------- LOCK ----------
 def already_sent_today(user):
@@ -95,8 +87,8 @@ def send_buttons(to, text):
 
 def main():
 
-    #users = load_json("data/users_daily.json")
-    users= { "919902244500": {"name": "Aarti"}}
+    users = load_json(FILE)
+    #users= { "919902244500": {"name": "Aarti"}}
     print("users loaded:",users)
 
     if not users:
