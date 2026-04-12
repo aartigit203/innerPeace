@@ -1,6 +1,6 @@
 import requests, os, json
 from services.daily_stories import get_daily_story
-from services.user_service import check_missed_users
+
 from datetime import date
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
@@ -96,9 +96,9 @@ def main():
         print("sendingto", user)
 
         
-        missed = check_missed_users()
+       # missed = check_missed_users()
         
-        for user in missed:
+        #for user in missed:
         
             msg = """🌸 Hare Krishna 🙏
         
@@ -107,7 +107,7 @@ def main():
         No worries… come back today 🌿  
         Every small step towards Him matters ✨"""
         
-            send_message(user, msg)
+            #send_message(user, msg)
     
         story = get_daily_story(day)
         streak_data = load_json("streak.json")
