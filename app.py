@@ -24,11 +24,12 @@ def webhook():
     add_user(sender)
 
     # MENU
-    if text in ["hi","menu"]:
+    if text in ["hareKrishna","menu"]:
         send_buttons(sender,"🌸 Hare Krishna 🙏",
         [
             {"type":"reply","reply":{"id":"peace","title":"🧘 Peace"}},
-            {"type":"reply","reply":{"id":"story","title":"📖 Story"}},
+            {"type":"reply","reply":{"id":"story","title":"📖 InstantStory"}},
+            {"type":"reply","reply":{"id":"dailystory","title":"📖 DailyStory"}},
             {"type":"reply","reply":{"id":"leader","title":"🏆 Leaderboard"}}
         ])
         return "ok",200
@@ -104,5 +105,28 @@ def webhook():
         return "ok",200
 
     return "ok",200
+
+    #DailyStory
+    if text == "dailystory":
+
+    users = load_json("users_daily.json")
+
+    if sender not in users:
+        users[sender] = {
+            "name": "User",
+            "day": 1,
+            "subscribed": True
+        }
+        save_json("users_daily.json", users)
+
+        send_message(sender,
+        "🌸 You are now registered for Daily Krishna Stories!\n\nYou will receive stories every evening 😊")
+
+    else:
+        send_message(sender,
+        "🌸 You are already subscribed, will recieve daily story at 11:00 AM IST 😊")
+
+    return "ok", 200
+
 
 app.run(host="0.0.0.0",port=10000)
