@@ -13,6 +13,7 @@ headers = {
 def load_json(file):
     try:
         with open(file) as f:
+            print("JSON Loaded",json.dump(f))
             return json.load(f)
     except:
         return {}
