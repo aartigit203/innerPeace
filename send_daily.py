@@ -3,7 +3,7 @@ from services.daily_stories import get_daily_story
 
 from datetime import date
 
-WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
+WHATSAPP_TOKEN = os.getenv("ACCESS_TOKEN")
 PHONE_NUMBER_ID = os.getenv("DAILY_PHONE_NUMBER_ID")
 
 headers = {
@@ -128,7 +128,7 @@ def main():
 
         ✨  Come back tomorrow for next story 💛"""
 
-        send_message(user, message)
+        #send_message(user, message)
 
         # Send quiz
         send_buttons(user, "🌸 Quiz Time!\nReply A, B or C")
