@@ -25,7 +25,7 @@ def send_template(to, day, title, text, video, streak):
 
     url = f"https://graph.facebook.com/v18.0/{PHONE_NUMBER_ID}/messages"
     print("to",to)
-    print("text"), text)
+    print("text", text)
 
     payload = {
         "messaging_product": "whatsapp",
