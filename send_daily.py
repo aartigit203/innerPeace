@@ -81,8 +81,8 @@ def send_buttons(to, text):
 
 def main():
 
-    users = load_json("data/users_daily.json")
-    #users= { "919902244500": {"name": "Aarti"}}
+    #users = load_json("data/users_daily.json")
+    users= { "919902244500": {"name": "Aarti"}}
     print("users loaded:",users)
 
     if not users:
