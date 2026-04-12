@@ -33,7 +33,7 @@ def send_message(to, text):
     url = f"https://graph.facebook.com/v18.0/{PHONE_ID}/messages"
 
     headers = {
-        "Authorization": f"Bearer {TOKEN},
+        "Authorization": f"Bearer {TOKEN}",
         "Content-Type": "application/json"
     }
 
