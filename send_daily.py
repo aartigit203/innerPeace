@@ -100,12 +100,12 @@ def main():
         
         #for user in missed:
         
-            msg = """🌸 Hare Krishna 🙏
+            #msg = """🌸 Hare Krishna 🙏
         
-        Krishna noticed you were not here yesterday 💛
+        #Krishna noticed you were not here yesterday 💛
         
-        No worries… come back today 🌿  
-        Every small step towards Him matters ✨"""
+        #No worries… come back today 🌿  
+        #Every small step towards Him matters ✨"""
         
             #send_message(user, msg)
     
