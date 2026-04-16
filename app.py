@@ -112,19 +112,19 @@ def webhook():
         users = load_json("data/users_daily.json")
 
         if sender not in users:
-        users[sender] = {
-            "name": "User",
-            "day": 1,
-            "subscribed": True
-            }
-        save_json("data/users_daily.json", users)
+            users[sender] = {
+                "name": "User",
+                "day": 1,
+                "subscribed": True
+                }
+            save_json("data/users_daily.json", users)
 
-        send_message(sender,
-        "🌸 You are now registered for Daily Krishna Stories!\n\nYou will receive stories every evening 😊")
+            send_message(sender,
+            "🌸 You are now registered for Daily Krishna Stories!\n\nYou will receive stories every evening 😊")
 
-    else:
-        send_message(sender,
-        "🌸 You are already subscribed, will recieve daily story at 11:00 AM IST 😊")
+        else:
+            send_message(sender,
+            "🌸 You are already subscribed, will recieve daily story at 11:00 AM IST 😊")
 
     return "ok", 200
 
