@@ -24,7 +24,7 @@ def webhook():
     add_user(sender)
 
     # MENU
-    if text in ["hareKrishna","menu"]:
+    if text in ["Harekrishna","menu"]:
         send_buttons(sender,"🌸 Hare Krishna 🙏",
         [
             {"type":"reply","reply":{"id":"peace","title":"🧘 Peace"}},
