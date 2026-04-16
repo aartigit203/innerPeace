@@ -10,15 +10,18 @@ import os
 
 app = Flask(__name__)
 user_mode = {}
-VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
-
+#VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+VERIFY_TOKEN = "krishna123"
 @app.route("/webhook", methods=["GET","POST"])
 def webhook():
     if request.method == "GET":
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
-        print("VEIRFY TOKEN and verify token", VERIFY_TOKEN )
-        print("VEIRFY TOKEN and verify token", verify_token )
+        
+        print("VEIRFY TOKEN", VERIFY_TOKEN)
+        
+        print(" verify token", verify_token)
+        
         if verify_token == VERIFY_TOKEN:
             return challenge
         return "Invalid token", 403
