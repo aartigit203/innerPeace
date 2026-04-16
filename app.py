@@ -10,21 +10,48 @@ from shlokas import get_shloka_response
 app = Flask(__name__)
 user_mode = {}
 
-@app.route("/webhook", methods=["POST"])
+@app.route("/webhook", methods=["GET","POST"])
 def webhook():
+    if request.method == "GET":
+        verify_token = request.args.get("hub.verify_token")
+        challenge = request.args.get("hub.challenge")
+
+        if verify_token == VERIFY_TOKEN:
+            return challenge
+        return "Invalid token", 403
+
+    # POST (actual messages)
     data = request.json
+    print("🔥 Webhook HIT", data)
+
+    print("DATA", data)
 
     try:
-        msg = data["entry"][0]["changes"][0]["value"]["messages"][0]
+        entry = data["entry"][0]
+        changes = entry["changes"][0]
+        value = changes["value"]
+        messages = value.get("messages")
+
+        if not messages:
+            return "ok", 200
+
+        msg = messages[0]
+
         sender = msg["from"]
-        text = msg["text"]["body"].lower() if msg["type"]=="text" else msg["interactive"]["button_reply"]["id"]
-    except:
-        return "ok",200
+        text = msg["text"]["body"].lower() if msg["type"] == "text" else ""
+
+        print("Sender:", sender)
+        print("Text:", text)
+
+    except Exception as e:
+        print("ERROR:", e)
+        return "ok", 200
+
 
     add_user(sender)
 
     # MENU
-    if text in ["Harekrishna","menu"]:
+    if text in ["hare krishna","menu"]:
         send_buttons(sender,"🌸 Hare Krishna 🙏",
         [
             {"type":"reply","reply":{"id":"peace","title":"🧘 Peace"}},
