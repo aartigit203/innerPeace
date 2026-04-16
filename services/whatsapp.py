@@ -1,7 +1,7 @@
 import requests, os, json, datetime
 from flask import Flask, request
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 TOKEN = os.getenv("WHATSAPP_TOKEN")
 PHONE_ID = os.getenv("PHONE_NUMBER_ID")
