@@ -8,7 +8,7 @@ from services.leaderboard_service import update_score, get_leaderboard
 from services.user_service import add_user
 from datetime import date
 
-FILE = "data/users_daily.json"
+
 
 
 #WHATSAPP_TOKEN = os.getenv("ACCESS_TOKEN")
@@ -65,6 +65,8 @@ def send_template(to, day, title, text, video, streak):
 
 
 def main():
+
+    FILE = "data/users_daily.json"
 
     users = load_json(FILE)
     #users= { "919902244500": {"name": "Aarti"}}
