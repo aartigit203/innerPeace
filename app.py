@@ -109,14 +109,14 @@ def webhook():
     #DailyStory
     if text == "dailystory":
 
-    users = load_json("data/users_daily.json")
+        users = load_json("data/users_daily.json")
 
-    if sender not in users:
+        if sender not in users:
         users[sender] = {
             "name": "User",
             "day": 1,
             "subscribed": True
-        }
+            }
         save_json("data/users_daily.json", users)
 
         send_message(sender,
