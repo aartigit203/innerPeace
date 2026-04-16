@@ -18,7 +18,7 @@ def webhook():
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
         print("VEIRFY TOKEN and verify token", VERIFY_TOKEN )
-         print("VEIRFY TOKEN and verify token", verify_token )
+        print("VEIRFY TOKEN and verify token", verify_token )
         if verify_token == VERIFY_TOKEN:
             return challenge
         return "Invalid token", 403
