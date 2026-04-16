@@ -10,11 +10,12 @@ import os
 
 app = Flask(__name__)
 user_mode = {}
-#VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
-VERIFY_TOKEN = "krishna123"
-print("VEIRFY TOKEN", VERIFY_TOKEN)
+
 @app.route("/webhook", methods=["GET","POST"])
 def webhook():
+    #VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+    VERIFY_TOKEN = "krishna123"
+    print("VEIRFY TOKEN", VERIFY_TOKEN)
     if request.method == "GET":
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
