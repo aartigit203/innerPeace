@@ -6,16 +6,19 @@ from services.leaderboard_service import update_score, get_leaderboard
 from services.user_service import add_user
 from stories import get_story
 from shlokas import get_shloka_response
+import os
 
 app = Flask(__name__)
 user_mode = {}
+VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 
 @app.route("/webhook", methods=["GET","POST"])
 def webhook():
     if request.method == "GET":
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
-
+        print("VEIRFY TOKEN and verify token", VERIFY_TOKEN )
+         print("VEIRFY TOKEN and verify token", verify_token )
         if verify_token == VERIFY_TOKEN:
             return challenge
         return "Invalid token", 403
