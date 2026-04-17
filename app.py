@@ -144,6 +144,8 @@ def webhook():
     if text == "dailystory":
 
         users = load_json("data/users_daily.json")
+        print("users", users)
+        print("sender",sender)
 
         if sender not in users:
             users[sender] = {
