@@ -15,7 +15,7 @@ user_mode = {}
 def webhook():
     #VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
     VERIFY_TOKEN = "krishna123"
-    print("VEIRFY TOKEN", VERIFY_TOKEN,flush=TRUE)
+    print("VEIRFY TOKEN", VERIFY_TOKEN,flush=True)
     if request.method == "GET":
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
@@ -164,4 +164,4 @@ def webhook():
     return "ok", 200
 
 
-app.run(host="0.0.0.0",port=10002)
+app.run(host="0.0.0.0",port=10002, debug=True)
