@@ -34,7 +34,7 @@ def send_message(to, text):
     url = f"https://graph.facebook.com/v18.0/{PHONE_ID}/messages"
 
     headers = {
-        "Authorization": f"Bearer {TOKEN}",
+        "Authorization": f"Bearer {ACCESS_TOKEN}",
         "Content-Type": "application/json"
     }
 
@@ -66,6 +66,7 @@ def send_buttons(to, text, buttons):
         }
     }
 
-    requests.post(url, headers=headers, json=payload)
+    response = requests.post(url, headers=headers, json=payload)
+    print("META Response". response.text, flush=True
 
  
