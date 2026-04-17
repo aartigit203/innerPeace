@@ -3,7 +3,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-TOKEN = os.getenv("WHATSAPP_TOKEN")
+TOKEN = os.getenv("ACCESS_TOKEN")
 PHONE_ID = os.getenv("PHONE_NUMBER_ID")
 
 # ---------- HELPERS ----------
