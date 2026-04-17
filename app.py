@@ -15,7 +15,7 @@ user_mode = {}
 def webhook():
     #VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
     VERIFY_TOKEN = "krishna123"
-    print("VEIRFY TOKEN", VERIFY_TOKEN)
+    print("VEIRFY TOKEN", VERIFY_TOKEN,flush=TRUE)
     if request.method == "GET":
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
@@ -29,7 +29,7 @@ def webhook():
         return "Invalid token", 403
 
     # POST (actual messages)
-    data = request.json
+    data = request.get_json()
     print("🔥 Webhook HIT", data)
 
     print("DATA", data)
