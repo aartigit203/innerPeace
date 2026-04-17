@@ -67,7 +67,7 @@ def webhook():
             {"type":"reply","reply":{"id":"dailystory","title":"📖 DailyStory"}}
         ])
         return "ok",200
-
+    print("button used", text)
     # PEACE
     if text=="peace":
         user_mode[sender]="peace"
