@@ -67,6 +67,6 @@ def send_buttons(to, text, buttons):
     }
 
     response = requests.post(url, headers=headers, json=payload)
-    print("META Response". response.text, flush=True)
+    print("META Response", response.text, flush=True)
 
  
