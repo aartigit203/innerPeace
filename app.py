@@ -66,11 +66,13 @@ def webhook():
             {"type":"reply","reply":{"id":"story","title":"📖 InstantStory"}},
             {"type":"reply","reply":{"id":"dailystory","title":"📖 DailyStory"}}
         ])
+        print("button used", text)
         return "ok",200
-    print("button used", text)
+    
     # PEACE
     if text=="peace":
         user_mode[sender]="peace"
+        print("inside If stament for peace", user_mode[sender])
         send_message(sender,"🧘 Tell me your thoughts 💭")
         return "ok",200
 
