@@ -64,8 +64,7 @@ def webhook():
         [
             {"type":"reply","reply":{"id":"peace","title":"🧘 Peace"}},
             {"type":"reply","reply":{"id":"story","title":"📖 InstantStory"}},
-            {"type":"reply","reply":{"id":"dailystory","title":"📖 DailyStory"}},
-            {"type":"reply","reply":{"id":"leader","title":"🏆 Leaderboard"}}
+            {"type":"reply","reply":{"id":"dailystory","title":"📖 DailyStory"}}
         ])
         return "ok",200
 
