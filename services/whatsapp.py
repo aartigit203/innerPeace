@@ -51,7 +51,7 @@ def send_buttons(to, text, buttons):
     url = f"https://graph.facebook.com/v18.0/{PHONE_ID}/messages"
 
     headers = {
-        "Authorization": f"Bearer {TOKEN}",
+        "Authorization": f"Bearer {ACCESS_TOKEN}",
         "Content-Type": "application/json"
     }
 
