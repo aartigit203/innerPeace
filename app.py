@@ -22,7 +22,7 @@ def webhook():
         
         print("VEIRFY TOKEN", VERIFY_TOKEN)
         
-        print(" verify token", verify_token)
+        print(" verify token", verify_token, flush=True)
         
         if verify_token == VERIFY_TOKEN:
             return challenge
@@ -30,7 +30,7 @@ def webhook():
 
     # POST (actual messages)
     data = request.get_json()
-    print("🔥 Webhook HIT", data)
+    print("🔥 Webhook HIT", data, flush=True)
 
     print("DATA", data)
 
