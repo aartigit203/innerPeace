@@ -1,38 +1,45 @@
 from flask import Flask, request
-from services.whatsapp import send_message, send_buttons
+from services.whatsapp import send_message, send_buttons, is_duplicate
 from services.quiz_service import set_quiz, get_quiz
 from services.streak_service import update_streak
 from services.leaderboard_service import update_score, get_leaderboard
 from services.user_service import add_user
+from utils.json_utils import load_json, save_json
 from stories import get_story
 from shlokas import get_shloka_response
-import os
+import os, time
 
 app = Flask(__name__)
+
+# TTL-based mode cache to prevent unbounded memory growth
 user_mode = {}
+MODE_TTL = 3600  # expire peace mode after 1 hour of inactivity
+
+def get_mode(sender):
+    entry = user_mode.get(sender)
+    if not entry:
+        return None
+    if time.time() - entry["ts"] > MODE_TTL:
+        del user_mode[sender]
+        return None
+    return entry["mode"]
+
+def set_mode(sender, mode):
+    user_mode[sender] = {"mode": mode, "ts": time.time()}
 
 @app.route("/webhook", methods=["GET","POST"])
 def webhook():
-    #VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
     VERIFY_TOKEN = "krishna123"
-    print("VEIRFY TOKEN", VERIFY_TOKEN,flush=True)
     if request.method == "GET":
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
-        
-        print("VEIRFY TOKEN", VERIFY_TOKEN)
-        
-        print(" verify token", verify_token, flush=True)
-        
+        print("verify token", verify_token, flush=True)
         if verify_token == VERIFY_TOKEN:
             return challenge
         return "Invalid token", 403
 
-    # POST (actual messages)
     data = request.get_json()
     print("🔥 Webhook HIT", data, flush=True)
-
-    print("DATA", data)
 
     try:
         entry = data["entry"][0]
@@ -44,56 +51,62 @@ def webhook():
             return "ok", 200
 
         msg = messages[0]
+        msg_id = msg["id"]
+
+        if is_duplicate(msg_id):
+            print("Duplicate message, skipping:", msg_id, flush=True)
+            return "ok", 200
 
         sender = msg["from"]
-        text = msg["text"]["body"].lower() if msg["type"] == "text" else ""
+
+        if msg["type"] == "text":
+            text = msg["text"]["body"].lower()
+        elif msg["type"] == "interactive":
+            text = msg.get("interactive", {}).get("button_reply", {}).get("id", "").lower()
+        else:
+            text = ""
 
         print("Sender:", sender)
         print("Text:", text)
 
     except Exception as e:
-        print("ERROR:", e)
+        print("ERROR:", e, flush=True)
         return "ok", 200
-
 
     add_user(sender)
 
     # MENU
-    if text in ["hi","menu"]:
-        send_buttons(sender,"🌸 Hare Krishna 🙏",
+    if text in ["hi", "menu"]:
+        send_buttons(sender, "🌸 Hare Krishna 🙏",
         [
             {"type":"reply","reply":{"id":"peace","title":"🧘 Peace"}},
             {"type":"reply","reply":{"id":"story","title":"📖 InstantStory"}},
             {"type":"reply","reply":{"id":"dailystory","title":"📖 DailyStory"}}
         ])
-        print("button used", text)
-        return "ok",200
-    
-    # PEACE
-    if text=="peace":
-        user_mode[sender]="peace"
-        print("inside If stament for peace", user_mode[sender])
-        send_message(sender,"🧘 Tell me your thoughts 💭")
-        return "ok",200
+        return "ok", 200
 
-    if user_mode.get(sender)=="peace":
-        send_message(sender,get_shloka_response(text))
-        return "ok",200
+    # PEACE
+    if text == "peace":
+        set_mode(sender, "peace")
+        send_message(sender, "🧘 Tell me your thoughts 💭")
+        return "ok", 200
+
+    if get_mode(sender) == "peace":
+        send_message(sender, get_shloka_response(text))
+        return "ok", 200
 
     # STORY
-    if text=="story":
+    if text == "story":
         s = get_story()
+        send_message(sender, s["text"])
 
-        send_message(sender,s["text"])
-        
         quiz = s.get("quiz")
-        
+
         if not quiz:
             send_message(sender, "🌸 No quiz today 😊")
-            return "ok",200
+            return "ok", 200
 
         set_quiz(sender, quiz["answer"])
-
         send_buttons(
             sender,
             quiz["question"],
@@ -102,69 +115,58 @@ def webhook():
                 {"type":"reply","reply":{"id":"b","title":quiz["options"]["b"]}},
                 {"type":"reply","reply":{"id":"c","title":quiz["options"]["c"]}}
             ]
-            )
-
-    #return "ok",200
-
+        )
+        return "ok", 200
 
     # ANSWER
-        if text in ["a","b","c"]:
-            correct = get_quiz(sender)
+    if text in ["a", "b", "c"]:
+        correct = get_quiz(sender)
 
         if not correct:
-            send_message(sender,"⚠️ Try story again")
-            return "ok",200
+            send_message(sender, "⚠️ Try story again")
+            return "ok", 200
 
         streak = update_streak(sender)
 
         if text == correct:
             update_score(sender)
-            send_message(sender,f"🎉 Correct!\n🔥 Streak: {streak}")
+            send_message(sender, f"🎉 Correct!\n🔥 Streak: {streak}")
         else:
-            send_message(sender,f"😊 Correct answer: {correct.upper()}")
+            send_message(sender, f"😊 Correct answer: {correct.upper()}")
 
-        return "ok",200
+        return "ok", 200
 
     # LEADERBOARD
-    if text=="leader":
+    if text == "leader":
         top = get_leaderboard()
 
         if not top:
-            send_message(sender,"🌸 No scores yet")
-            return "ok",200
+            send_message(sender, "🌸 No scores yet")
+            return "ok", 200
 
-        msg="🏆 Leaderboard\n\n"
-        for i,(u,s) in enumerate(top[:5],1):
+        msg = "🏆 Leaderboard\n\n"
+        for i, (u, s) in enumerate(top[:5], 1):
             msg += f"{i}. {u[-4:]} → {s} 🔥\n"
 
-        send_message(sender,msg)
-        return "ok",200
+        send_message(sender, msg)
+        return "ok", 200
 
-    return "ok",200
-
-    #DailyStory
+    # DAILY STORY
     if text == "dailystory":
-
         users = load_json("data/users_daily.json")
-        print("users", users)
-        print("sender",sender)
 
         if sender not in users:
-            users[sender] = {
-                "name": "User",
-                "day": 1,
-                "subscribed": True
-                }
+            users[sender] = {"name": "User", "day": 1, "subscribed": True}
             save_json("data/users_daily.json", users)
-
             send_message(sender,
-            "🌸 You are now registered for Daily Krishna Stories!\n\nYou will receive stories every evening 😊")
-
+                "🌸 You are now registered for Daily Krishna Stories!\n\nYou will receive stories every evening 😊")
         else:
             send_message(sender,
-            "🌸 You are already subscribed, will recieve daily story at 11:00 AM IST 😊")
+                "🌸 You are already subscribed, will receive daily story at 11:00 AM IST 😊")
 
     return "ok", 200
 
 
-app.run(host="0.0.0.0",port=10002, debug=True)
+if __name__ == "__main__":
+    print("✅ Server started successfully on port 10002", flush=True)
+    app.run(host="0.0.0.0", port=10002, debug=True)
