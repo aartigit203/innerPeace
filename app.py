@@ -11,21 +11,24 @@ import os, time
 
 app = Flask(__name__)
 
-# TTL-based mode cache to prevent unbounded memory growth
-user_mode = {}
 MODE_TTL = 3600  # expire peace mode after 1 hour of inactivity
+USER_MODE_FILE = "data/user_mode.json"
 
 def get_mode(sender):
-    entry = user_mode.get(sender)
+    data = load_json(USER_MODE_FILE)
+    entry = data.get(sender)
     if not entry:
         return None
     if time.time() - entry["ts"] > MODE_TTL:
-        del user_mode[sender]
+        del data[sender]
+        save_json(USER_MODE_FILE, data)
         return None
     return entry["mode"]
 
 def set_mode(sender, mode):
-    user_mode[sender] = {"mode": mode, "ts": time.time()}
+    data = load_json(USER_MODE_FILE)
+    data[sender] = {"mode": mode, "ts": time.time()}
+    save_json(USER_MODE_FILE, data)
 
 @app.route("/webhook", methods=["GET","POST"])
 def webhook():
@@ -39,16 +42,20 @@ def webhook():
         return "Invalid token", 403
 
     data = request.get_json()
-    print("🔥 Webhook HIT", data, flush=True)
 
     try:
         entry = data["entry"][0]
         changes = entry["changes"][0]
         value = changes["value"]
-        messages = value.get("messages")
 
+        if value.get("statuses"):
+            return "ok", 200
+
+        messages = value.get("messages")
         if not messages:
             return "ok", 200
+
+        print("🔥 Webhook HIT", data, flush=True)
 
         msg = messages[0]
         msg_id = msg["id"]
