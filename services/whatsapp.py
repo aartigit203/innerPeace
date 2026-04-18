@@ -1,8 +1,11 @@
 import requests, os
 from utils.json_utils import load_json, save_json
 
-TOKEN = os.getenv("ACCESS_TOKEN")
-PHONE_ID = os.getenv("PHONE_NUMBER_ID")
+def _token():
+    return os.getenv("ACCESS_TOKEN")
+
+def _phone_id():
+    return os.getenv("PHONE_NUMBER_ID")
 
 # ---------- DEDUPE ----------
 def is_duplicate(msg_id):
@@ -23,9 +26,9 @@ def is_duplicate(msg_id):
 
 # ---------- SEND ----------
 def send_message(to, text):
-    url = f"https://graph.facebook.com/v18.0/{PHONE_ID}/messages"
+    url = f"https://graph.facebook.com/v18.0/{_phone_id()}/messages"
     headers = {
-        "Authorization": f"Bearer {TOKEN}",
+        "Authorization": f"Bearer {_token()}",
         "Content-Type": "application/json"
     }
     payload = {
@@ -43,9 +46,9 @@ def send_message(to, text):
 
 
 def send_buttons(to, text, buttons):
-    url = f"https://graph.facebook.com/v18.0/{PHONE_ID}/messages"
+    url = f"https://graph.facebook.com/v18.0/{_phone_id()}/messages"
     headers = {
-        "Authorization": f"Bearer {TOKEN}",
+        "Authorization": f"Bearer {_token()}",
         "Content-Type": "application/json"
     }
     payload = {

@@ -8,8 +8,11 @@ from utils.json_utils import load_json, save_json
 from stories import get_story
 from shlokas import get_shloka_response
 import os, time
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 
 app = Flask(__name__)
+VERIFY_TOKEN = os.getenv("VERIFY_TOKEN", "krishna123")
 
 MODE_TTL = 3600  # expire peace mode after 1 hour of inactivity
 USER_MODE_FILE = "data/user_mode.json"
@@ -32,7 +35,6 @@ def set_mode(sender, mode):
 
 @app.route("/webhook", methods=["GET","POST"])
 def webhook():
-    VERIFY_TOKEN = "krishna123"
     if request.method == "GET":
         verify_token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
